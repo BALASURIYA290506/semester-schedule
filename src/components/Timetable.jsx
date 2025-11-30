@@ -303,7 +303,8 @@ function Timetable({ schedule, studentInfo, onBack }) {
   </button>
 </div>
 
-        
+    {/* Desktop Table */}
+    <div className="hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -339,8 +340,25 @@ function Timetable({ schedule, studentInfo, onBack }) {
             </tbody>
           </table>
         </div>
-      </div>
+    </div>
+        
+    {/* Mobile Card View */}
+<div className="md:hidden space-y-4">
+  {schedule.map((entry, index) => (
+    <div
+      key={index}
+      className="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 shadow-md"
+    >
+      <p className="text-gray-300 text-sm"><span className="font-semibold">Date:</span> {formatDate(entry.date)}</p>
+      <p className="text-gray-300 text-sm"><span className="font-semibold">Session:</span> {entry.session}</p>
+      <p className="text-gray-300 text-sm"><span className="font-semibold">Category:</span> {entry.category}</p>
+      <p className="text-gray-300 text-sm"><span className="font-semibold">Subject:</span> {entry.subjectName}</p>
+      <p className="text-gray-300 text-sm"><span className="font-semibold">Room:</span> {entry.roomHall}</p>
+    </div>
+  ))}
+</div>
 
+      </div>
       {/* Export Button */}
       
       <p className="text-center text-gray-400 text-sm mt-3">
