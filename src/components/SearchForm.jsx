@@ -94,7 +94,7 @@ function SearchForm({ onSearch, darkMode, toggleDarkMode }) {
             >
               <div className="flex items-center gap-2 flex-1">
                 <img 
-                  src="/developer1.jpg" 
+                  src="/developer1.png" 
                   alt="BalaSuriya M" 
                   className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-zinc-700"
                 />
