@@ -1,0 +1,16 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#000000"/>
+  
+  <!-- Calendar -->
+  <rect x="6" y="8" width="20" height="18" rx="2" fill="white"/>
+  <rect x="6" y="8" width="20" height="5" rx="2" fill="#FF4444"/>
+  <rect x="6" y="11" width="20" height="2" fill="#FF4444"/>
+  
+  <!-- Calendar Rings -->
+  <rect x="9" y="6" width="2" height="4" rx="1" fill="white"/>
+  <rect x="21" y="6" width="2" height="4" rx="1" fill="white"/>
+  
+  <!-- Checkmark -->
+  <path d="M11 17 L14 20 L21 13" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

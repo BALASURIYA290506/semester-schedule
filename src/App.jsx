@@ -7,12 +7,7 @@ function App() {
   const [studentSchedule, setStudentSchedule] = useState(null)
   const [studentInfo, setStudentInfo] = useState(null)
 
-  const handleSearch = (name, registerNumber) => {
-    // Normalize name: trim, lowercase, remove extra spaces
-    const normalizeName = (str) => str.trim().toLowerCase().replace(/\s+/g, ' ')
-    
-    const normalizedSearchName = normalizeName(name)
-    
+  const handleSearch = (registerNumber) => {
     // Convert date from DD.MM.YYYY to YYYY-MM-DD
     const convertDate = (dateStr) => {
       if (!dateStr) return null
@@ -33,23 +28,17 @@ function App() {
       return upper
     }
     
-    // Filter students matching both name and register number
+    // Filter students matching register number
     const filtered = studentsData.filter(student => {
-      const studentName = student['Student Name'] || student.studentName || ''
       const regNumber = student['Register Number'] || student.registerNumber || ''
-      
-      const normalizedStudentName = normalizeName(studentName)
       const searchRegNumber = registerNumber.trim().toString()
       const studentRegNumber = regNumber.toString().trim()
       
-      return (
-        normalizedStudentName === normalizedSearchName &&
-        studentRegNumber === searchRegNumber
-      )
+      return studentRegNumber === searchRegNumber
     })
 
     if (filtered.length === 0) {
-      alert('Student not found! Please check your name and register number.')
+      alert('Student not found! Please check your register number.')
       return
     }
 
@@ -65,6 +54,7 @@ function App() {
         originalDate: dateStr,
         session: normalizeSession(slot),
         category: student['Category'] || student.category || '',
+        subjectCode: student['Subject Code'] || student.subjectCode || '',
         subjectName: student['Subject Name'] || student.subjectName || '',
         roomHall: student['Location'] || student.roomHall || student['Room / Hall'] || ''
       }
@@ -98,7 +88,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         {!studentSchedule ? (
           <SearchForm onSearch={handleSearch} />
