@@ -66,6 +66,65 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
     return gapDays > 0 ? gapDays : null
   }
 
+  const getExamStatus = (dateString) => {
+    if (!dateString) return 'upcoming'
+    const examDate = new Date(dateString)
+    examDate.setHours(0, 0, 0, 0)
+    const todayDate = new Date()
+    todayDate.setHours(0, 0, 0, 0)
+    
+    if (examDate.getTime() === todayDate.getTime()) return 'today'
+    if (examDate.getTime() < todayDate.getTime()) return 'finished'
+    return 'upcoming'
+  }
+
+  const getTimeRemaining = (dateString) => {
+    if (!dateString) return null
+    const examDate = new Date(dateString)
+    const now = new Date()
+    const diffMs = examDate - now
+    
+    if (diffMs < 0) return null // Exam has passed
+    
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    const diffDays = Math.floor(diffHours / 24)
+    const remainingHours = diffHours % 24
+    
+    if (diffDays > 0) {
+      return `${diffDays}d ${remainingHours}h left`
+    } else if (diffHours > 0) {
+      return `${diffHours}h left`
+    } else {
+      const diffMinutes = Math.floor(diffMs / (1000 * 60))
+      return `${diffMinutes}m left`
+    }
+  }
+
+  const getStatusBadge = (status) => {
+    if (status === 'today') {
+      return (
+        <span className="inline-block px-2 lg:px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700 rounded-full text-xs font-bold animate-pulse whitespace-nowrap">
+          TODAY
+        </span>
+      )
+    }
+    if (status === 'upcoming') {
+      return (
+        <span className="inline-block px-2 lg:px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700 rounded-full text-xs font-semibold whitespace-nowrap">
+          UPCOMING
+        </span>
+      )
+    }
+    if (status === 'finished') {
+      return (
+        <span className="inline-block px-2 lg:px-3 py-1 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-zinc-700 rounded-full text-xs font-semibold whitespace-nowrap">
+          FINISHED
+        </span>
+      )
+    }
+    return null
+  }
+
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A'
     const date = new Date(dateString)
@@ -350,7 +409,7 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
 
         {/* Upcoming Exams Section */}
         {upcomingExams.length > 0 && (
-          <div className="bg-white dark:bg-black rounded-lg sm:rounded-xl shadow-md border border-gray-200 dark:border-zinc-700 p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300">
+          <div className="bg-white dark:bg-black rounded-lg sm:rounded-xl shadow-md border-2 border-gray-200 dark:border-zinc-700 p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-black dark:text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -392,13 +451,16 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
                       <React.Fragment key={index}>
                         <tr className="border-b border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors">
                           <td className="py-3 px-2 lg:px-3">
-                            <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-2">
+                            <div className="flex flex-col gap-1">
                               <span className="text-black dark:text-white font-medium text-xs lg:text-sm whitespace-nowrap">{formatDate(entry.date)}</span>
-                              {isToday(entry.date) && (
-                                <span className="px-2 py-0.5 bg-red-100 dark:bg-white text-red-800 dark:text-black border border-red-300 dark:border-white rounded text-xs font-bold animate-pulse w-fit">
-                                  TODAY
-                                </span>
-                              )}
+                              <div className="flex items-center gap-2">
+                                {getStatusBadge(getExamStatus(entry.date))}
+                                {getExamStatus(entry.date) !== 'finished' && getTimeRemaining(entry.date) && (
+                                  <span className="text-[10px] font-semibold text-orange-600 dark:text-orange-400">
+                                    {getTimeRemaining(entry.date)}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </td>
                           <td className="py-3 px-2 lg:px-3">
@@ -444,16 +506,23 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
                   <React.Fragment key={index}>
                     <div className="bg-white dark:bg-black border border-gray-200 dark:border-zinc-700 rounded-lg p-3 sm:p-4 shadow-sm transition-colors duration-300">
                       <div className="space-y-2">
+                        {/* Status Badge and Time Remaining */}
+                        <div className="flex justify-between items-center">
+                          <div>
+                            {getStatusBadge(getExamStatus(entry.date))}
+                          </div>
+                          {getExamStatus(entry.date) !== 'finished' && getTimeRemaining(entry.date) && (
+                            <div className="text-xs font-semibold text-orange-600 dark:text-orange-400">
+                              {getTimeRemaining(entry.date)}
+                            </div>
+                          )}
+                        </div>
+                        
                         {/* Date and Session Row */}
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Date</p>
                             <p className="text-sm font-semibold text-black dark:text-white break-words">{formatDate(entry.date)}</p>
-                            {isToday(entry.date) && (
-                              <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 dark:bg-white text-red-800 dark:text-black border border-red-300 dark:border-white rounded text-xs font-bold animate-pulse">
-                                TODAY
-                              </span>
-                            )}
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Session</p>
@@ -506,7 +575,7 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
 
         {/* Finished Exams Section */}
         {finishedExams.length > 0 && (
-          <div className="bg-white dark:bg-black rounded-lg sm:rounded-xl shadow-md border border-gray-200 dark:border-zinc-700 p-4 sm:p-6 transition-colors duration-300">
+          <div className="bg-white dark:bg-black rounded-lg sm:rounded-xl shadow-md border-2 border-gray-200 dark:border-zinc-700 p-4 sm:p-6 transition-colors duration-300">
             <div className="flex items-center gap-2 mb-4 sm:mb-6">
               <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -530,7 +599,12 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
                 <tbody>
                   {finishedExams.map((entry, index) => (
                     <tr key={index} className="border-b border-gray-100 dark:border-zinc-800">
-                      <td className="py-3 px-2 lg:px-3 text-gray-500 dark:text-gray-400 text-xs lg:text-sm whitespace-nowrap">{formatDate(entry.date)}</td>
+                      <td className="py-3 px-2 lg:px-3">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-gray-500 dark:text-gray-400 text-xs lg:text-sm whitespace-nowrap">{formatDate(entry.date)}</span>
+                          {getStatusBadge('finished')}
+                        </div>
+                      </td>
                       <td className="py-3 px-2 lg:px-3">
                         <span className="inline-block px-2 lg:px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-zinc-700 whitespace-nowrap">
                           {entry.session}
@@ -555,6 +629,11 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
               {finishedExams.map((entry, index) => (
                 <div key={index} className="bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg p-3 sm:p-4 transition-colors duration-300">
                   <div className="space-y-2">
+                    {/* Status Badge */}
+                    <div className="flex justify-end">
+                      {getStatusBadge('finished')}
+                    </div>
+                    
                     {/* Date and Session Row */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
