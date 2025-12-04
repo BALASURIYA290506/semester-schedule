@@ -173,21 +173,21 @@ function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) 
   const getStatusBadge = (status) => {
     if (status === 'today') {
       return (
-        <span className="inline-block px-2 lg:px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700 rounded-full text-xs font-bold animate-pulse whitespace-nowrap">
+        <span className="inline-flex items-center justify-center min-w-[75px] px-2 lg:px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700 rounded-full text-xs font-bold animate-pulse whitespace-nowrap">
           TODAY
         </span>
       )
     }
     if (status === 'upcoming') {
       return (
-        <span className="inline-block px-2 lg:px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700 rounded-full text-xs font-semibold whitespace-nowrap">
+        <span className="inline-flex items-center justify-center min-w-[75px] px-2 lg:px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700 rounded-full text-xs font-semibold whitespace-nowrap">
           UPCOMING
         </span>
       )
     }
     if (status === 'finished') {
       return (
-        <span className="inline-block px-2 lg:px-3 py-1 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-zinc-700 rounded-full text-xs font-semibold whitespace-nowrap">
+        <span className="inline-flex items-center justify-center min-w-[75px] px-2 lg:px-3 py-1 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-zinc-700 rounded-full text-xs font-semibold whitespace-nowrap">
           FINISHED
         </span>
       )
