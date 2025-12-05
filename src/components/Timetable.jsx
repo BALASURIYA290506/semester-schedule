@@ -4,28 +4,27 @@ import autoTable from 'jspdf-autotable'
 
 function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) {
 
-  // Separate upcoming and finished exams
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Separate upcoming and finished exams based on session end time
+  const now = new Date()
   
-  const upcomingExams = schedule.filter(entry => {
-    const examDate = new Date(entry.date)
-    examDate.setHours(0, 0, 0, 0)
-    return examDate >= today
-  })
+  const isExamFinished = (dateString, session) => {
+    if (!dateString) return false
+    const examDate = new Date(dateString)
+    const endHour = session === 'FN' ? 12 : 16
+    const sessionEnd = new Date(examDate)
+    sessionEnd.setHours(endHour, 0, 0, 0)
+    return now > sessionEnd
+  }
   
-  const finishedExams = schedule.filter(entry => {
-    const examDate = new Date(entry.date)
-    examDate.setHours(0, 0, 0, 0)
-    return examDate < today
-  })
+  const upcomingExams = schedule.filter(entry => !isExamFinished(entry.date, entry.session))
+  const finishedExams = schedule.filter(entry => isExamFinished(entry.date, entry.session))
 
   const getCategoryBadgeClass = (category) => {
     if (category === 'Theory') {
       return 'bg-blue-100 text-blue-800 border-blue-300'
     }
     if (category === 'Practical') {
-      return 'bg-green-100 text-green-800 border-green-300'
+      return 'bg-cyan-100 text-cyan-800 border-cyan-300'
     }
     if (category === 'Project') {
       return 'bg-purple-100 text-purple-800 border-purple-300'
@@ -150,7 +149,7 @@ const getTimeRemaining = (dateString, session) => {
     }
     if (status === 'finished') {
       return (
-        <span className="inline-flex items-center justify-center min-w-[75px] px-2 lg:px-3 py-1 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-zinc-700 rounded-full text-xs font-semibold whitespace-nowrap">
+        <span className="inline-flex items-center justify-center min-w-[75px] px-2 lg:px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-300 dark:border-green-700 rounded-full text-xs font-semibold whitespace-nowrap">
           FINISHED
         </span>
       )
@@ -520,7 +519,7 @@ const getTimeRemaining = (dateString, session) => {
                           <td className="py-3 px-2 lg:px-3 text-gray-600 dark:text-gray-400 text-xs lg:text-sm break-words">{entry.roomHall}</td>
                         </tr>
                         {daysGap && (
-                          <tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-800">
                             <td colSpan="6" className="py-2 px-2 lg:px-3">
                               <div className="flex items-center justify-center">
                                 <div className="bg-gray-100 dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-full px-3 lg:px-4 py-1 text-xs font-medium text-gray-600 dark:text-white whitespace-nowrap">
@@ -633,39 +632,33 @@ const getTimeRemaining = (dateString, session) => {
 
             {/* Desktop Table */}
             <div className="hidden lg:block overflow-x-auto -mx-4 sm:-mx-6 px-4 sm:px-6">
-              <table className="w-full min-w-full opacity-70 dark:opacity-60">
+              <table className="w-full min-w-full">
                 <thead>
-                  <tr className="border-b border-gray-300 dark:border-zinc-700">
-                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-gray-600 dark:text-gray-400 whitespace-nowrap">Date</th>
-                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-gray-600 dark:text-gray-400 whitespace-nowrap">Session</th>
-                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-gray-600 dark:text-gray-400 whitespace-nowrap">Category</th>
-                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-gray-600 dark:text-gray-400 whitespace-nowrap">Code</th>
-                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-gray-600 dark:text-gray-400">Subject</th>
-                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-gray-600 dark:text-gray-400">Location</th>
+                  <tr className="border-b-2 border-black dark:border-white">
+                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-black dark:text-white whitespace-nowrap">Date</th>
+                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-black dark:text-white whitespace-nowrap">Category</th>
+                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-black dark:text-white whitespace-nowrap">Code</th>
+                    <th className="text-left py-3 px-2 lg:px-3 text-xs lg:text-sm font-bold text-black dark:text-white">Subject</th>
                   </tr>
                 </thead>
                 <tbody>
                   {finishedExams.map((entry, index) => (
-                    <tr key={index} className="border-b border-gray-100 dark:border-zinc-800">
+                    <tr key={index} className="border-b border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors">
                       <td className="py-3 px-2 lg:px-3">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-gray-500 dark:text-gray-400 text-xs lg:text-sm whitespace-nowrap">{formatDate(entry.date)}</span>
-                          {getStatusBadge('finished')}
+                        <div className="flex items-center gap-2">
+                          <span className="text-black dark:text-white font-medium text-xs lg:text-sm whitespace-nowrap">{formatDate(entry.date)}</span>
+                          <span className="inline-flex items-center justify-center px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-300 dark:border-green-700 rounded-full text-[10px] font-semibold whitespace-nowrap">
+                            FINISHED
+                          </span>
                         </div>
                       </td>
                       <td className="py-3 px-2 lg:px-3">
-                        <span className="inline-block px-2 lg:px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-zinc-700 whitespace-nowrap">
-                          {entry.session}
-                        </span>
-                      </td>
-                      <td className="py-3 px-2 lg:px-3">
-                        <span className="inline-block px-2 lg:px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-zinc-700 whitespace-nowrap">
+                        <span className={`inline-block px-2 lg:px-3 py-1 rounded-full text-xs font-semibold border whitespace-nowrap ${getCategoryBadgeClass(entry.category)}`}>
                           {entry.category}
                         </span>
                       </td>
-                      <td className="py-3 px-2 lg:px-3 text-gray-500 dark:text-gray-400 text-xs lg:text-sm font-mono whitespace-nowrap">{entry.subjectCode}</td>
-                      <td className="py-3 px-2 lg:px-3 text-gray-600 dark:text-gray-300 text-xs lg:text-sm break-words min-w-[150px] max-w-[300px]">{entry.subjectName}</td>
-                      <td className="py-3 px-2 lg:px-3 text-gray-500 dark:text-gray-400 text-xs lg:text-sm break-words">{entry.roomHall}</td>
+                      <td className="py-3 px-2 lg:px-3 text-gray-600 dark:text-gray-400 text-xs lg:text-sm font-mono whitespace-nowrap">{entry.subjectCode}</td>
+                      <td className="py-3 px-2 lg:px-3 text-black dark:text-white font-medium text-xs lg:text-sm break-words min-w-[150px] max-w-[300px]">{entry.subjectName}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -673,53 +666,41 @@ const getTimeRemaining = (dateString, session) => {
             </div>
 
             {/* Mobile Card View */}
-            <div className="lg:hidden space-y-3 opacity-70 dark:opacity-60">
+            <div className="lg:hidden space-y-3">
               {finishedExams.map((entry, index) => (
-                <div key={index} className="bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg p-3 sm:p-4 transition-colors duration-300">
+                <div key={index} className="bg-white dark:bg-black border border-gray-200 dark:border-zinc-700 rounded-lg p-3 sm:p-4 shadow-sm transition-colors duration-300">
                   <div className="space-y-2">
                     {/* Status Badge */}
                     <div className="flex justify-end">
                       {getStatusBadge('finished')}
                     </div>
                     
-                    {/* Date and Session Row */}
+                    {/* Date Row */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Date</p>
-                        <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 break-words">{formatDate(entry.date)}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Session</p>
-                        <span className="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-zinc-700 whitespace-nowrap">
-                          {entry.session}
-                        </span>
+                        <p className="text-sm font-semibold text-black dark:text-white break-words">{formatDate(entry.date)}</p>
                       </div>
                     </div>
                     
                     {/* Category and Code Row */}
-                    <div className="flex items-start justify-between gap-2 pt-2 border-t border-gray-200 dark:border-zinc-800">
+                    <div className="flex items-start justify-between gap-2 pt-2 border-t border-gray-100 dark:border-zinc-800">
                       <div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Category</p>
-                        <span className="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-zinc-700 whitespace-nowrap">
+                        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold border whitespace-nowrap ${getCategoryBadgeClass(entry.category)}`}>
                           {entry.category}
                         </span>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Code</p>
-                        <p className="text-xs font-mono text-gray-500 dark:text-gray-400">{entry.subjectCode}</p>
+                        <p className="text-xs font-mono text-gray-600 dark:text-gray-400">{entry.subjectCode}</p>
                       </div>
                     </div>
                     
                     {/* Subject Row */}
-                    <div className="pt-2 border-t border-gray-200 dark:border-zinc-800">
+                    <div className="pt-2 border-t border-gray-100 dark:border-zinc-800">
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Subject</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 break-words leading-relaxed">{entry.subjectName}</p>
-                    </div>
-                    
-                    {/* Location Row */}
-                    <div className="pt-2 border-t border-gray-200 dark:border-zinc-800">
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Location</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 break-words">{entry.roomHall}</p>
+                      <p className="text-sm font-medium text-black dark:text-white break-words leading-relaxed">{entry.subjectName}</p>
                     </div>
                   </div>
                 </div>
