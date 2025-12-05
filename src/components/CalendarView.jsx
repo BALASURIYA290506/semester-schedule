@@ -109,29 +109,13 @@ END:VEVENT
   }
 
   const exportToGoogleCalendar = () => {
-    // Open Google Calendar with first exam
-    if (schedule.length > 0) {
-      const firstExam = schedule[0]
-      const examDate = new Date(firstExam.date)
-      const startHour = firstExam.session === 'FN' ? 9 : 13
-      const endHour = firstExam.session === 'FN' ? 12 : 16
-      
-      const startDateTime = new Date(examDate)
-      startDateTime.setHours(startHour, 0, 0, 0)
-      
-      const endDateTime = new Date(examDate)
-      endDateTime.setHours(endHour, 0, 0, 0)
-
-      const formatGoogleDate = (date) => {
-        return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
-      }
-
-      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(firstExam.subjectName + ' (' + firstExam.category + ')')}&dates=${formatGoogleDate(startDateTime)}/${formatGoogleDate(endDateTime)}&details=${encodeURIComponent('Subject Code: ' + firstExam.subjectCode + '\nSession: ' + firstExam.session)}&location=${encodeURIComponent(firstExam.roomHall)}`
-      
-      window.open(url, '_blank')
-      
-      alert('Opening Google Calendar for the first exam. For all exams, please download the .ics file and import it to Google Calendar.')
-    }
+    // Download ICS file and show instructions for Google Calendar import
+    exportToICS()
+    
+    setTimeout(() => {
+      const message = `ICS file downloaded!\n\nTo add all exams to Google Calendar:\n\n1. Open Google Calendar (calendar.google.com)\n2. Click the "+" button next to "Other calendars"\n3. Select "Import"\n4. Choose the downloaded .ics file\n5. Select which calendar to add events to\n6. Click "Import"\n\nAll ${schedule.length} exams will be added to your Google Calendar!`
+      alert(message)
+    }, 500)
   }
 
   const getCategoryColor = (category) => {
