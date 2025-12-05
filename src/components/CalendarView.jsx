@@ -389,7 +389,7 @@ END:VEVENT
                       {/* Timeline dot */}
                       <div className={`absolute left-0 w-2.5 h-2.5 rounded-full border ${
                         isFinished 
-                          ? 'bg-white dark:bg-black border-gray-400 dark:border-gray-600' 
+                          ? 'bg-gray-400 dark:bg-gray-600 border-gray-400 dark:border-gray-600' 
                           : 'bg-black dark:bg-white border-black dark:border-white'
                       }`}></div>
 
