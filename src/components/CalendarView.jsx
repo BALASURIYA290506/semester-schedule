@@ -324,10 +324,6 @@ END:VEVENT
                 <div className="w-3 h-3 rounded-full bg-cyan-500"></div>
                 <span className="text-gray-600 dark:text-gray-400">Practical</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                <span className="text-gray-600 dark:text-gray-400">Project</span>
-              </div>
             </div>
           </div>
         )}
