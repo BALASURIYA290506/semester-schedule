@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 function CalendarView({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [view, setView] = useState('calendar') // 'calendar' or 'timeline'
+  const [showExportModal, setShowExportModal] = useState(false)
 
   // Get all exam dates
   const examDates = schedule.reduce((acc, exam) => {
@@ -109,14 +110,8 @@ END:VEVENT
   }
 
   const exportToGoogleCalendar = () => {
-    // Download ICS file and show instructions for Google Calendar import
-    if (confirm(`📅 Export ${schedule.length} exams to Google Calendar?\n\nThis will download a calendar file (.ics) that you can import into Google Calendar to add all your exams at once.\n\nClick OK to download the file.`)) {
-      exportToICS()
-      
-      setTimeout(() => {
-        alert(`✅ Calendar file downloaded successfully!\n\n📋 Import Steps:\n\n1. Open Google Calendar (calendar.google.com)\n2. Click Settings ⚙️ → Import & Export\n3. Click "Select file from your computer"\n4. Choose the downloaded .ics file\n5. Select destination calendar\n6. Click "Import"\n\n🎉 All ${schedule.length} exams will appear in your calendar!`)
-      }, 500)
-    }
+    exportToICS()
+    setShowExportModal(true)
   }
 
   const getCategoryColor = (category) => {
@@ -128,6 +123,64 @@ END:VEVENT
 
   return (
     <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
+      {/* Export Success Modal */}
+      {showExportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4" onClick={() => setShowExportModal(false)}>
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-[fadeIn_0.2s_ease-in-out]" onClick={(e) => e.stopPropagation()}>
+            {/* Success Icon */}
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-2xl font-bold text-center text-black dark:text-white mb-2">
+              Calendar Downloaded!
+            </h3>
+            <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
+              All {schedule.length} exams are ready to import
+            </p>
+
+            {/* Instructions */}
+            <div className="bg-gray-50 dark:bg-zinc-800 rounded-xl p-4 mb-6">
+              <h4 className="font-bold text-black dark:text-white mb-3 flex items-center gap-2">
+                <span className="text-blue-600 dark:text-blue-400">📋</span>
+                Import to Google Calendar:
+              </h4>
+              <ol className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                <li className="flex gap-2">
+                  <span className="font-bold text-blue-600 dark:text-blue-400 flex-shrink-0">1.</span>
+                  <span>Open <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">calendar.google.com</a></span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-blue-600 dark:text-blue-400 flex-shrink-0">2.</span>
+                  <span>Click Settings ⚙️ → <strong>Import & Export</strong></span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-blue-600 dark:text-blue-400 flex-shrink-0">3.</span>
+                  <span>Select the downloaded <strong>.ics</strong> file</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="font-bold text-blue-600 dark:text-blue-400 flex-shrink-0">4.</span>
+                  <span>Choose your calendar and click <strong>Import</strong></span>
+                </li>
+              </ol>
+            </div>
+
+            {/* Close Button */}
+            <button
+              onClick={() => setShowExportModal(false)}
+              className="w-full bg-black dark:bg-white text-white dark:text-black font-semibold py-3 px-4 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Dark Mode Toggle */}
       <button
         onClick={toggleDarkMode}
