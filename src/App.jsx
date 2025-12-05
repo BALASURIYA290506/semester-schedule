@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import SearchForm from './components/SearchForm'
 import Timetable from './components/Timetable'
+import CalendarView from './components/CalendarView'
 import studentsData from './data/students.json'
 
 function App() {
   const [studentSchedule, setStudentSchedule] = useState(null)
   const [studentInfo, setStudentInfo] = useState(null)
+  const [showCalendar, setShowCalendar] = useState(false)
   const [darkMode, setDarkMode] = useState(() => {
     // Check localStorage for saved preference, default to light mode (false)
     const savedMode = localStorage.getItem('darkMode')
@@ -105,6 +107,15 @@ function App() {
   const handleBack = () => {
     setStudentSchedule(null)
     setStudentInfo(null)
+    setShowCalendar(false)
+  }
+
+  const handleCalendarView = () => {
+    setShowCalendar(true)
+  }
+
+  const handleBackToTimetable = () => {
+    setShowCalendar(false)
   }
 
   return (
@@ -112,11 +123,20 @@ function App() {
       <div className="container mx-auto px-4 py-8">
         {!studentSchedule ? (
           <SearchForm onSearch={handleSearch} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        ) : showCalendar ? (
+          <CalendarView 
+            schedule={studentSchedule} 
+            studentInfo={studentInfo}
+            onBack={handleBackToTimetable}
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+          />
         ) : (
           <Timetable 
             schedule={studentSchedule} 
             studentInfo={studentInfo}
             onBack={handleBack}
+            onCalendarView={handleCalendarView}
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}
           />

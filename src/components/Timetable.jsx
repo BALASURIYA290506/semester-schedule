@@ -2,7 +2,7 @@ import React from 'react'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
-function Timetable({ schedule, studentInfo, onBack, darkMode, toggleDarkMode }) {
+function Timetable({ schedule, studentInfo, onBack, onCalendarView, darkMode, toggleDarkMode }) {
 
   // Separate upcoming and finished exams based on session end time
   const now = new Date()
@@ -449,15 +449,26 @@ const getTimeRemaining = (dateString, session) => {
                 </svg>
                 <h2 className="text-xl sm:text-2xl font-bold text-black dark:text-white">Upcoming Exams</h2>
               </div>
-              <button
-                onClick={downloadPDF}
-                className="w-full sm:w-auto bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Export PDF
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button
+                  onClick={onCalendarView}
+                  className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Calendar
+                </button>
+                <button
+                  onClick={downloadPDF}
+                  className="flex-1 sm:flex-none bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  PDF
+                </button>
+              </div>
             </div>
 
             {/* Desktop Table */}
