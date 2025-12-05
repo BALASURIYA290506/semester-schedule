@@ -337,9 +337,6 @@ END:VEVENT
             <h2 className="text-lg sm:text-xl font-bold text-black dark:text-white mb-4">Exam Timeline</h2>
             
             <div className="relative">
-              {/* Vertical line */}
-              <div className="absolute left-[5px] top-0 bottom-0 w-[1px] bg-gray-200 dark:bg-zinc-800"></div>
-              
               <div className="space-y-3">
                 {schedule.map((exam, index) => {
                   const examDate = new Date(exam.date)
@@ -349,8 +346,19 @@ END:VEVENT
                   sessionEnd.setHours(endHour, 0, 0, 0)
                   const isFinished = now > sessionEnd
                   
+                  // Check if exam is on December 3, 2025
+                  // Use local date components to avoid timezone issues
+                  const isPostponed = examDate.getFullYear() === 2025 && 
+                                     examDate.getMonth() === 11 && 
+                                     examDate.getDate() === 3
+                  
                   return (
                     <div key={index} className="relative pl-5">
+                      {/* Vertical line - only show if not the last item */}
+                      {index < schedule.length - 1 && (
+                        <div className="absolute left-[5px] top-0 bottom-0 w-[1px] bg-gray-200 dark:bg-zinc-800"></div>
+                      )}
+                      
                       {/* Timeline dot */}
                       <div className={`absolute left-0 w-2.5 h-2.5 rounded-full border ${
                         isFinished 
@@ -376,7 +384,11 @@ END:VEVENT
                               }`}>
                                 {exam.category}
                               </span>
-                              {isFinished && (
+                              {isPostponed ? (
+                                <span className="inline-block px-1.5 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded text-[9px] font-semibold">
+                                  Postponed
+                                </span>
+                              ) : isFinished && (
                                 <span className="inline-block px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded text-[9px] font-semibold">
                                   ✓
                                 </span>
