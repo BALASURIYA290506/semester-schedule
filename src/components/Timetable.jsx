@@ -132,7 +132,17 @@ const getTimeRemaining = (dateString, session) => {
 
 
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status, dateString) => {
+    // Check if exam is on December 3, 2025
+    const isPostponed = dateString === '2025-12-03'
+    
+    if (isPostponed) {
+      return (
+        <span className="inline-flex items-center justify-center min-w-[75px] px-2 lg:px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700 rounded-full text-xs font-semibold whitespace-nowrap">
+          POSTPONED
+        </span>
+      )
+    }
     if (status === 'today') {
       return (
         <span className="inline-flex items-center justify-center min-w-[75px] px-2 lg:px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700 rounded-full text-xs font-bold animate-pulse whitespace-nowrap">
@@ -498,7 +508,7 @@ const getTimeRemaining = (dateString, session) => {
                               <span className="text-black dark:text-white font-medium text-xs lg:text-sm whitespace-nowrap">{formatDate(entry.date)}</span>
                               <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-2">
-                                  {getStatusBadge(getExamStatus(entry.date))}
+                                  {getStatusBadge(getExamStatus(entry.date), entry.date)}
                                   {getExamStatus(entry.date) !== 'finished' && getTimeRemaining(entry.date, entry.session, entry.category) && (
                                     <span className="text-[10px] font-semibold text-orange-600 dark:text-orange-400">
                                       {getTimeRemaining(entry.date, entry.session, entry.category)}
@@ -561,7 +571,7 @@ const getTimeRemaining = (dateString, session) => {
                         {/* Status Badge and Time Remaining */}
                         <div className="flex justify-between items-start">
                           <div className="flex flex-col gap-1">
-                            {getStatusBadge(getExamStatus(entry.date))}
+                            {getStatusBadge(getExamStatus(entry.date), entry.date)}
                                 {getSessionTime(entry.session) && (
                                   <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300">
                                     {getSessionTime(entry.session)}
@@ -658,9 +668,7 @@ const getTimeRemaining = (dateString, session) => {
                       <td className="py-3 px-2 lg:px-3">
                         <div className="flex items-center gap-2">
                           <span className="text-black dark:text-white font-medium text-xs lg:text-sm whitespace-nowrap">{formatDate(entry.date)}</span>
-                          <span className="inline-flex items-center justify-center px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-300 dark:border-green-700 rounded-full text-[10px] font-semibold whitespace-nowrap">
-                            FINISHED
-                          </span>
+                          {getStatusBadge('finished', entry.date)}
                         </div>
                       </td>
                       <td className="py-3 px-2 lg:px-3">
@@ -683,7 +691,7 @@ const getTimeRemaining = (dateString, session) => {
                   <div className="space-y-2">
                     {/* Status Badge */}
                     <div className="flex justify-end">
-                      {getStatusBadge('finished')}
+                      {getStatusBadge('finished', entry.date)}
                     </div>
                     
                     {/* Date Row */}
