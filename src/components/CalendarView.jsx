@@ -395,16 +395,16 @@ END:VEVENT
 
                       {/* Event card */}
                       <div className={`${isFinished ? 'opacity-50' : ''}`}>
-                        <div className="bg-white dark:bg-black border border-gray-200 dark:border-zinc-700 rounded-lg p-2.5">
+                        <div className="bg-white dark:bg-black border border-gray-200 dark:border-zinc-700 rounded-lg p-3 sm:p-4">
                           {/* Header */}
-                          <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="flex items-start justify-between gap-2 mb-2.5">
                             <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-black dark:text-white text-xs leading-tight break-words">
+                              <h3 className="font-semibold text-black dark:text-white text-sm sm:text-base leading-snug break-words">
                                 {exam.subjectName}
                               </h3>
                             </div>
-                            <div className="flex gap-1 items-center flex-shrink-0">
-                              <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold ${
+                            <div className="flex gap-1.5 items-center flex-shrink-0">
+                              <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
                                 exam.category === 'Theory' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
                                 exam.category === 'Practical' ? 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300' :
                                 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
@@ -412,11 +412,11 @@ END:VEVENT
                                 {exam.category}
                               </span>
                               {isPostponed ? (
-                                <span className="inline-block px-1.5 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded text-[9px] font-semibold">
+                                <span className="inline-block px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded text-xs font-semibold">
                                   Postponed
                                 </span>
                               ) : isFinished && (
-                                <span className="inline-block px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded text-[9px] font-bold shadow-sm">
+                                <span className="inline-block px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded text-xs font-bold shadow-sm">
                                   ✓
                                 </span>
                               )}
@@ -424,27 +424,27 @@ END:VEVENT
                           </div>
 
                           {/* Details */}
-                          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-gray-500 dark:text-gray-400">
-                            <span className="flex items-center gap-1">
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-gray-500 dark:text-gray-400">
+                            <span className="flex items-center gap-1.5">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                               </svg>
                               {examDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                             </span>
-                            <span className="flex items-center gap-1">
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <span className="flex items-center gap-1.5">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
                               {exam.session}
                             </span>
-                            <span className="flex items-center gap-1 font-mono">
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <span className="flex items-center gap-1.5 font-mono">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                               </svg>
                               {exam.subjectCode}
                             </span>
-                            <span className="flex items-center gap-1 truncate">
-                              <svg className="w-2.5 h-2.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <span className="flex items-center gap-1.5 truncate">
+                              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                               </svg>
