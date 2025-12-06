@@ -430,7 +430,7 @@ END:VEVENT
 
                       {/* Event card */}
                       <div>
-                        <div className={`bg-white dark:bg-black border border-gray-200 dark:border-zinc-700 rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-md ${isFinished && !isPostponed ? 'opacity-60 grayscale-[0.5]' : ''}`}>
+                        <div className={`bg-white dark:bg-black border border-gray-200 dark:border-zinc-700 rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-md`}>
                           <div className="flex items-center justify-between gap-3">
                             {/* Left: Date Icon + Subject Name */}
                             <div className="flex items-center gap-2.5 flex-1 min-w-0">
